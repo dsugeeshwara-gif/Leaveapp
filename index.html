@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>නිවාඩු පද්ධතිය</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h2>IRONSHIELD DEFENDER</h2>
+            <p>නිවාඩු අයදුම් කිරීමේ පද්ධතිය</p>
+        </header>
+
+        <div id="login-box" class="card">
+            <input type="text" id="empId" placeholder="සේවා අංකය (උදා: EMP001)">
+            <button onclick="login()">පිවිසෙන්න</button>
+            <p id="msg" style="color:red;"></p>
+        </div>
+
+        <div id="leave-form" class="card" style="display:none;">
+            <h3 id="userName"></h3>
+            <label>නිවාඩු දින තෝරන්න (එකකට වඩා තෝරන්න පුළුවන්):</label>
+            <input type="date" id="dateInput">
+            <button class="add-btn" onclick="addDate()">දවස එකතු කරන්න</button>
+            <div id="date-list"></div>
+            
+            <textarea id="reason" placeholder="නිවාඩුවට හේතුව..."></textarea>
+            <button class="submit-btn" onclick="sendData()">අයදුම්පත යවන්න</button>
+            <p id="status"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
