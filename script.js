@@ -1,4 +1,4 @@
-const SCRIPT_URL = "මෙතැනට_ඔබේ_WEB_APP_URL_එක_දමන්න";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzlyC8R2JyF1gMHWAJCYWu4SwEUpEfUbfYALSYNxAHv_wJKN-s5-I_BnQDfbB19oiWz/exec";
 
 const users = {
     "EMP001": { name: "Commander Wickramasinghe", role: "CSO" },
