@@ -1,4 +1,4 @@
-const SCRIPT_URL = "මෙතැනට_ඔබේ_WEB_APP_URL_එක_දමන්න";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZH1IsNBg2CIr6Bn0NLCQ44SPmy4FXu8Co__qcGGsI6XyLwtk2nUUWYxVNcW4iuk3h/exec";
 let currentUser = null;
 let selectedDates = [];
 let currentMonth = new Date();
