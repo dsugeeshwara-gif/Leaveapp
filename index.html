@@ -3,34 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>නිවාඩු පද්ධතිය</title>
+    <title>IRONSHIELD DEFENDER - Leave System</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h2>IRONSHIELD DEFENDER</h2>
-            <p>නිවාඩු අයදුම් කිරීමේ පද්ධතිය</p>
-        </header>
+    <header>
+        <h1>IRONSHIELD DEFENDER SECURITY</h1>
+        <p>නිවාඩු කළමනාකරණ පද්ධතිය</p>
+    </header>
 
-        <div id="login-box" class="card">
-            <input type="text" id="empId" placeholder="සේවා අංකය (උදා: EMP001)">
-            <button onclick="login()">පිවිසෙන්න</button>
-            <p id="msg" style="color:red;"></p>
-        </div>
+    <main class="container">
+        <section id="login-section" class="card">
+            <h3>පරිශීලක පිවිසුම</h3>
+            <input type="text" id="employeeIdInput" placeholder="සේවා අංකය (උදා: 28)">
+            <button class="primary-btn" onclick="login()">පිවිසෙන්න</button>
+            <div id="authMessage" style="color:red; margin-top:10px;"></div>
+        </section>
 
-        <div id="leave-form" class="card" style="display:none;">
-            <h3 id="userName"></h3>
-            <label>නිවාඩු දින තෝරන්න (එකකට වඩා තෝරන්න පුළුවන්):</label>
-            <input type="date" id="dateInput">
-            <button class="add-btn" onclick="addDate()">දවස එකතු කරන්න</button>
-            <div id="date-list"></div>
+        <section id="leave-section" style="display:none;" class="card">
+            <div class="user-info">
+                <span id="welcome-text"></span>
+                <button class="logout-btn" onclick="location.reload()">පිටවීම</button>
+            </div>
+            <hr>
+            <h4>නිවාඩු දින තෝරන්න (උපරිම දින 5)</h4>
             
-            <textarea id="reason" placeholder="නිවාඩුවට හේතුව..."></textarea>
-            <button class="submit-btn" onclick="sendData()">අයදුම්පත යවන්න</button>
-            <p id="status"></p>
-        </div>
-    </div>
+            <div id="calendar-container">
+                <div id="calendar-header">
+                    <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
+                    <span id="month-display"></span>
+                    <button class="nav-btn" onclick="changeMonth(1)">▶</button>
+                </div>
+                <div id="calendar-grid" class="calendar-grid"></div>
+            </div>
+
+            <div id="date-list">තෝරාගත් දින: නැත</div>
+            
+            <textarea id="reason" placeholder="නිවාඩුවට හේතුව මෙතැන ලියන්න..."></textarea>
+            <button class="submit-btn" onclick="submitLeave()">අයදුම්පත යවන්න</button>
+            <div id="submission-status"></div>
+        </section>
+
+        <section id="admin-section" style="display:none;" class="card admin-card">
+            <h3>පරිපාලක පැනලය</h3>
+            <div class="admin-box">
+                <h4>අනුමත කිරීමට ඇති නිවාඩු</h4>
+                <div id="pending-leaves-list">පරීක්ෂා කරමින්...</div>
+            </div>
+            <hr>
+            <div class="admin-box">
+                <h4>නව සාමාජිකයෙකු එක් කරන්න</h4>
+                <input type="text" id="newEmpId" placeholder="EMP අංකය">
+                <input type="text" id="newName" placeholder="නම">
+                <input type="text" id="newRole" placeholder="තනතුර">
+                <button class="primary-btn" onclick="addNewMember()">එක් කරන්න</button>
+            </div>
+        </section>
+    </main>
     <script src="script.js"></script>
 </body>
 </html>
