@@ -3,63 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IRONSHIELD DEFENDER - Leave System</title>
+    <title>IRONSHIELD - Smart Leave System</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>IRONSHIELD DEFENDER SECURITY</h1>
-        <p>නිවාඩු කළමනාකරණ පද්ධතිය</p>
-    </header>
 
-    <main class="container">
-        <section id="login-section" class="card">
-            <h3>පරිශීලක පිවිසුම</h3>
-            <input type="text" id="employeeIdInput" placeholder="සේවා අංකය (උදා: 28)">
-            <button class="primary-btn" onclick="login()">පිවිසෙන්න</button>
-            <div id="authMessage" style="color:red; margin-top:10px;"></div>
-        </section>
+    <div class="header">
+        <h2>IRONSHIELD DEFENDER</h2>
+        <p>ස්මාර්ට් නිවාඩු කළමනාකරණ පද්ධතිය</p>
+    </div>
 
-        <section id="leave-section" style="display:none;" class="card">
-            <div class="user-info">
-                <span id="welcome-text"></span>
-                <button class="logout-btn" onclick="location.reload()">පිටවීම</button>
-            </div>
-            <hr>
-            <h4>නිවාඩු දින තෝරන්න (උපරිම දින 5)</h4>
-            
-            <div id="calendar-container">
-                <div id="calendar-header">
-                    <button class="nav-btn" onclick="changeMonth(-1)">◀</button>
-                    <span id="month-display"></span>
-                    <button class="nav-btn" onclick="changeMonth(1)">▶</button>
-                </div>
-                <div id="calendar-grid" class="calendar-grid"></div>
-            </div>
+    <div id="login-section" class="card">
+        <h3 style="margin-top:0;">ආයුබෝවන්!</h3>
+        <p style="color:#64748b; font-size:14px;">ඉදිරියට යාමට ඔබේ සේවා අංකය ඇතුළත් කරන්න.</p>
+        <input type="text" id="empIdInput" placeholder="සේවා අංකය (උදා: 28)">
+        <button class="btn-main" onclick="login()">පිවිසෙන්න</button>
+    </div>
 
-            <div id="date-list">තෝරාගත් දින: නැත</div>
-            
-            <textarea id="reason" placeholder="නිවාඩුවට හේතුව මෙතැන ලියන්න..."></textarea>
-            <button class="submit-btn" onclick="submitLeave()">අයදුම්පත යවන්න</button>
-            <div id="submission-status"></div>
-        </section>
+    <div id="user-section" class="card" style="display:none;">
+        <div style="text-align:center;">
+            <img id="display-photo" class="profile-img" src="" alt="Profile">
+            <h3 id="display-name" style="margin:0;"></h3>
+            <div id="display-role-badge"></div>
+        </div>
+        
+        <div style="margin-top:30px;">
+            <h4 style="margin-bottom:10px;">නිවාඩු දින තෝරන්න</h4>
+            <p style="font-size:12px; color:#64748b;">මසකට හිමි උපරිම නිවාඩු ගණන: 04</p>
+            <div id="calendar-grid" class="calendar-grid"></div>
+            <textarea id="reason" placeholder="නිවාඩුවට හේතුව මෙතන ලියන්න..."></textarea>
+            <button class="btn-main" onclick="submitLeave()">අයදුම්පත යවන්න</button>
+        </div>
 
-        <section id="admin-section" style="display:none;" class="card admin-card">
-            <h3>පරිපාලක පැනලය</h3>
-            <div class="admin-box">
-                <h4>අනුමත කිරීමට ඇති නිවාඩු</h4>
-                <div id="pending-leaves-list">පරීක්ෂා කරමින්...</div>
-            </div>
-            <hr>
-            <div class="admin-box">
-                <h4>නව සාමාජිකයෙකු එක් කරන්න</h4>
-                <input type="text" id="newEmpId" placeholder="EMP අංකය">
-                <input type="text" id="newName" placeholder="නම">
-                <input type="text" id="newRole" placeholder="තනතුර">
-                <button class="primary-btn" onclick="addNewMember()">එක් කරන්න</button>
-            </div>
-        </section>
-    </main>
+        <div id="my-leaves-container" style="margin-top:30px;">
+            <h4>මගේ අයදුම්පත්</h4>
+            <div id="my-leaves"></div>
+        </div>
+        
+        <button onclick="location.reload()" style="background:none; border:none; color:#ef4444; font-weight:bold; cursor:pointer; width:100%; margin-top:20px;">පද්ධතියෙන් ඉවත් වන්න (Logout)</button>
+    </div>
+
+    <div id="approver-panel" class="card" style="display:none; border-top: 5px solid #f59e0b;">
+        <h3 style="margin:0 0 15px 0;">නිවාඩු අනුමත කිරීම</h3>
+        <div id="admin-leaves"></div>
+    </div>
+
+    <div id="super-admin-section" class="card" style="display:none; border-top: 5px solid #1e3a8a;">
+        <h4 style="margin:0 0 15px 0;">නව සාමාජිකයෙක් එක් කරන්න</h4>
+        <input type="text" id="newId" placeholder="ID (උදා: 29)">
+        <input type="text" id="newName" placeholder="නම">
+        <input type="text" id="newRole" placeholder="තනතුර">
+        <button class="btn-main" onclick="addStaff()" style="background:#059669;">සාමාජිකයා එක් කරන්න</button>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
