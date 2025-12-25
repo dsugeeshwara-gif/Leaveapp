@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IRONSHIELD DEFENDER</title>
+    <title>IRONSHIELD DEFENDER - Leave System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -11,18 +11,17 @@
 
     <div class="header">
         <h2>IRONSHIELD DEFENDER</h2>
-        <p>ස්මාර්ට් නිවාඩු පද්ධතිය (Cloud)</p>
+        <p>ස්මාර්ට් නිවාඩු කළමනාකරණය</p>
     </div>
 
     <div id="loading-overlay" class="overlay" style="display:none;">
         <div class="loader"></div>
-        <p>දත්ත පූරණය වෙමින් පවතී...</p>
+        <p>සම්බන්ධ වෙමින් පවතී...</p>
     </div>
 
     <div id="login-section" class="card">
         <h3 style="text-align: center;">පිවිසුම</h3>
-        <p style="font-size: 13px; color: #64748b; text-align: center;">ඔබේ සේවා අංකය ඇතුළත් කර පිවිසෙන්න.</p>
-        <input type="number" id="empIdInput" placeholder="සේවා අංකය (උදා: 28)">
+        <input type="number" id="empIdInput" placeholder="සේවා අංකය ඇතුළත් කරන්න">
         <button class="btn-main" onclick="login()">පිවිසෙන්න</button>
     </div>
 
@@ -33,15 +32,15 @@
             <div id="display-role-badge"></div>
         </div>
         
-        <div style="margin-top:25px;">
+        <div style="margin-top:20px;">
             <h4>නිවාඩු දින තෝරන්න (උපරිම 04)</h4>
             <div id="calendar-grid" class="calendar-grid"></div>
-            <textarea id="reason" placeholder="නිවාඩුවට හේතුව සඳහන් කරන්න..."></textarea>
-            <button class="btn-main" onclick="submitLeave()">අයදුම්පත යවන්න</button>
+            <textarea id="reason" placeholder="හේතුව මෙතන ලියන්න..."></textarea>
+            <button class="btn-main" onclick="submitLeave()">නිවාඩු අයදුම් කරන්න</button>
         </div>
 
-        <div style="margin-top:25px;">
-            <h4>මගේ නිවාඩු අයදුම්පත්</h4>
+        <div style="margin-top:20px;">
+            <h4>මගේ අයදුම්පත් වල තත්ත්වය</h4>
             <div id="my-leaves"></div>
         </div>
         
@@ -54,11 +53,11 @@
     </div>
 
     <div id="super-admin-section" class="card" style="display:none; border-top: 5px solid #1e3a8a;">
-        <h4>නව සාමාජිකයෙක් එක් කරන්න</h4>
-        <input type="number" id="newId" placeholder="සේවා අංකය (ID)">
+        <h4>සාමාජිකයින් කළමනාකරණය</h4>
+        <input type="number" id="newId" placeholder="නව ID">
         <input type="text" id="newName" placeholder="නම">
         <input type="text" id="newRole" placeholder="තනතුර">
-        <button class="btn-main" onclick="addStaff()" style="background:#059669;">සාමාජිකයා එක් කරන්න</button>
+        <button class="btn-main" onclick="addStaff()" style="background:#059669;">එක් කරන්න</button>
     </div>
 
     <script src="script.js"></script>
