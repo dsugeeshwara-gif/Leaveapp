@@ -1,139 +1,172 @@
-let db = JSON.parse(localStorage.getItem('ironshield_db')) || {
-    users: [
-        {id: "EMP028", name: "ප්‍රධාන පරිපාලක", role: "Super Admin"},
-        {id: "EMP001", name: "S/M බංඩාර", role: "Approver"},
-        {id: "EMP018", name: "CSO ලියනගේ", role: "Approver"}
-    ],
-    leaves: []
-};
+// ඔයාගේ URL එක මෙන්න මම ඇතුළත් කළා
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwgM-_vzIcRU1oJaX2fqRCgDDV-IAcBm1ntrCz8nE4ZAVR17bxhwnhuvNXoiy8UrldZ/exec";
 
-function saveDB() { localStorage.setItem('ironshield_db', JSON.stringify(db)); }
-
-let selectedDates = [];
+let db = { users: [], leaves: [] };
 let me = null;
+let selectedDates = [];
 
-function login() {
-    let inputId = "EMP" + document.getElementById("empIdInput").value.replace(/\D/g, "").padStart(3, '0');
-    me = db.users.find(u => u.id === inputId);
+// පිවිසීමේ ශ්‍රිතය (Login Function)
+async function login() {
+    const inputVal = document.getElementById("empIdInput").value;
+    if (!inputVal) return alert("කරුණාකර සේවා අංකය ඇතුළත් කරන්න!");
     
-    if(me) {
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("user-section").style.display = "block";
-        document.getElementById("display-name").innerText = me.name;
-        document.getElementById("display-role-badge").innerHTML = `<span class="badge ${me.id==='EMP028'?'badge-admin':'badge-user'}">${me.role}</span>`;
-        document.getElementById("display-photo").src = `https://ui-avatars.com/api/?name=${me.name}&background=1e3a8a&color=fff`;
+    showLoading(true);
+    const empId = "EMP" + inputVal.padStart(3, '0');
 
-        renderCalendar();
-        showMyLeaves();
+    try {
+        // Google Sheet එකෙන් දත්ත ලබා ගැනීම
+        const response = await fetch(`${SCRIPT_URL}?action=getInitialData`);
+        const data = await response.json();
+        
+        db.users = data.users.map(u => ({ id: String(u[0]), name: u[1], role: u[2] }));
+        db.leaves = data.leaves.map(l => ({
+            id: l[0], empId: String(l[1]), name: l[2], dayOnly: l[3], 
+            fullDates: String(l[4]).split(","), status: l[6], actionBy: l[7], reason: l[5]
+        }));
 
-        if(me.id === "EMP028") document.getElementById("super-admin-section").style.display = "block";
-        if(["EMP028", "EMP001", "EMP018"].includes(me.id)) {
-            document.getElementById("approver-panel").style.display = "block";
-            renderAdmin();
+        // පරිශීලකයා පරීක්ෂා කිරීම
+        me = db.users.find(u => u.id.toUpperCase() === empId.toUpperCase());
+
+        if (me) {
+            document.getElementById("login-section").style.display = "none";
+            document.getElementById("user-section").style.display = "block";
+            document.getElementById("display-name").innerText = me.name;
+            document.getElementById("display-role-badge").innerHTML = `<span class="badge">${me.role}</span>`;
+            document.getElementById("display-photo").src = `https://ui-avatars.com/api/?name=${me.name}&background=1e3a8a&color=fff`;
+
+            renderCalendar();
+            showMyLeaves();
+            checkPermissions();
+        } else {
+            alert("මෙම සේවා අංකය පද්ධතියේ නැත. කරුණාකර පරිපාලක අමතන්න!");
         }
-    } else { alert("වැරදි සේවා අංකයක්!"); }
+    } catch (error) {
+        console.error("Login Error:", error);
+        alert("දත්ත පූරණය කිරීමේ දෝෂයකි. ඔබගේ අන්තර්ජාල සම්බන්ධතාවය පරීක්ෂා කරන්න.");
+    }
+    showLoading(false);
 }
 
+// බලතල පරීක්ෂා කිරීම (Permissions)
+function checkPermissions() {
+    if (me.id === "EMP028") document.getElementById("super-admin-section").style.display = "block";
+    if (["EMP028", "EMP001", "EMP018"].includes(me.id)) {
+        document.getElementById("approver-panel").style.display = "block";
+        renderAdmin();
+    }
+}
+
+// දින දර්ශනය පෙන්වීම
 function renderCalendar() {
     const grid = document.getElementById("calendar-grid");
     grid.innerHTML = "";
-    let now = new Date();
-    let days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
-    
-    for(let i=1; i<=days; i++) {
-        let dStr = `${now.getFullYear()}-${now.getMonth()+1}-${i}`;
-        let count = db.leaves.filter(l => l.fullDates.includes(dStr) && l.status !== "Rejected").length;
-        let isFull = count >= 4; 
-        let isSel = selectedDates.includes(dStr);
-        
+    const now = new Date();
+    const days = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+
+    for (let i = 1; i <= days; i++) {
+        const dStr = `${now.getFullYear()}-${now.getMonth() + 1}-${i}`;
+        // දැනටමත් නිවාඩු 4ක් ලබාගෙන ඇති දින පරීක්ෂා කිරීම
+        const count = db.leaves.filter(l => l.fullDates.includes(dStr) && l.status !== "Rejected").length;
+        const isFull = count >= 4;
+        const isSel = selectedDates.includes(dStr);
+
         grid.innerHTML += `<div class="day ${isFull ? 'full' : ''} ${isSel ? 'selected' : ''}" 
             onclick="${!isFull ? `toggleDate('${dStr}')` : ''}">${i}</div>`;
     }
 }
 
 function toggleDate(d) {
-    let idx = selectedDates.indexOf(d);
-    if(idx > -1) selectedDates.splice(idx, 1);
-    else if(selectedDates.length < 5) selectedDates.push(d);
+    const idx = selectedDates.indexOf(d);
+    if (idx > -1) selectedDates.splice(idx, 1);
+    else if (selectedDates.length < 4) selectedDates.push(d);
     renderCalendar();
 }
 
-function submitLeave() {
-    let myActiveLeaves = db.leaves.filter(l => l.empId === me.id && l.status !== "Rejected");
-    let currentRequestedCount = 0;
-    myActiveLeaves.forEach(l => { currentRequestedCount += l.dayOnly.split(", ").length; });
-
-    if (currentRequestedCount + selectedDates.length > 4) {
-        alert(`ඔබට මසකට ගත හැකි උපරිම නිවාඩු ගණන 4 කි.`);
-        return;
-    }
-
-    if(selectedDates.length === 0) return alert("දින තෝරන්න!");
+// නිවාඩු අයදුම්පත යැවීම
+async function submitLeave() {
+    if (selectedDates.length === 0) return alert("කරුණාකර අවම වශයෙන් එක් දිනයක්වත් තෝරන්න!");
     
-    let sorted = selectedDates.sort((a,b) => new Date(a) - new Date(b));
-    let dayOnlyList = sorted.map(d => d.split("-")[2]).join(", ");
+    showLoading(true);
+    const sorted = selectedDates.sort((a, b) => new Date(a) - new Date(b));
+    const dayOnly = sorted.map(d => d.split("-")[2]).join(", ");
 
-    db.leaves.push({
-        id: Date.now(),
+    const body = new URLSearchParams({
+        action: "submitLeave",
         empId: me.id,
         name: me.name,
-        fullDates: sorted,
-        dayOnly: dayOnlyList,
-        reason: document.getElementById("reason").value || "හේතුවක් නැත",
-        status: "Pending",
-        actionBy: ""
+        dayOnly: dayOnly,
+        fullDates: sorted.join(","),
+        reason: document.getElementById("reason").value || "හේතුවක් සඳහන් කර නැත"
     });
 
-    saveDB();
-    alert("යවන ලදී!");
-    selectedDates = [];
-    document.getElementById("reason").value = "";
-    renderCalendar();
-    showMyLeaves();
-    renderAdmin();
+    try {
+        await fetch(SCRIPT_URL, { method: "POST", body });
+        alert("නිවාඩු අයදුම්පත සාර්ථකව යවන ලදී!");
+        location.reload();
+    } catch (e) {
+        alert("අයදුම්පත යැවීමට නොහැකි විය. නැවත උත්සාහ කරන්න.");
+        showLoading(false);
+    }
 }
 
+// මගේ නිවාඩු පෙන්වීම
 function showMyLeaves() {
-    let my = db.leaves.filter(l => l.empId === me.id);
+    const my = db.leaves.filter(l => l.empId === me.id);
     document.getElementById("my-leaves").innerHTML = my.length ? my.map(l => `
         <div class="leave-item">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-weight:700;">දින: ${l.dayOnly}</span>
-                <span class="status-pill status-${l.status}">${l.status}</span>
-            </div>
-            ${l.actionBy ? `<div style="font-size:12px; color:#64748b; margin-top:8px;">තීරණය කළේ: ${l.actionBy}</div>` : ''}
-        </div>`).join("") : "අයදුම්පත් නැත.";
+            <span>📅 <b>${l.dayOnly}</b></span>
+            <span class="status-label status-${l.status}">${l.status}</span>
+        </div>`).join("") : "<p style='font-size:13px; color:#94a3b8;'>වාර්තා කිසිවක් නැත.</p>";
 }
 
+// Admin පැනලය පෙන්වීම
 function renderAdmin() {
-    let pending = db.leaves.filter(l => l.status === "Pending");
+    const pending = db.leaves.filter(l => l.status === "Pending");
     document.getElementById("admin-leaves").innerHTML = pending.length ? pending.map(l => `
-        <div style="background:#f8fafc; padding:15px; border-radius:12px; margin-bottom:12px; border:1px solid #e2e8f0;">
-            <div style="font-weight:700; color:#1e3a8a;">${l.name}</div>
-            <div style="font-size:14px;">දින: ${l.dayOnly}</div>
-            <div class="admin-controls">
-                <button class="admin-btn" onclick="updateStatus(${l.id}, 'Approved')" style="background:#10b981; color:white;">Approve</button>
-                <button class="admin-btn" onclick="updateStatus(${l.id}, 'Rejected')" style="background:#ef4444; color:white;">Reject</button>
+        <div class="leave-item" style="flex-direction:column; align-items:flex-start;">
+            <div style="margin-bottom:8px;"><b>${l.name}</b> (දින: ${l.dayOnly})<br><small>${l.reason}</small></div>
+            <div style="display:flex; gap:10px; width:100%;">
+                <button onclick="updateStatus('${l.id}', 'Approved')" style="flex:1; background: #10b981; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;">Approve</button>
+                <button onclick="updateStatus('${l.id}', 'Rejected')" style="flex:1; background: #ef4444; color:white; border:none; padding:8px; border-radius:8px; cursor:pointer;">Reject</button>
             </div>
-        </div>`).join("") : "නව අයදුම්පත් නැත.";
+        </div>`).join("") : "<p style='font-size:13px; color:#94a3b8;'>නව අයදුම්පත් නැත.</p>";
 }
 
-function updateStatus(leaveId, status) {
-    let leave = db.leaves.find(l => l.id === leaveId);
-    if(leave) { leave.status = status; leave.actionBy = me.name; }
-    saveDB();
-    renderAdmin(); renderCalendar(); showMyLeaves();
+// තත්ත්වය යාවත්කාලීන කිරීම (Approve/Reject)
+async function updateStatus(id, status) {
+    showLoading(true);
+    const body = new URLSearchParams({ action: "updateStatus", id, status, actionBy: me.name });
+    try {
+        await fetch(SCRIPT_URL, { method: "POST", body });
+        location.reload();
+    } catch (e) {
+        alert("දෝෂයකි!");
+        showLoading(false);
+    }
 }
 
-function addStaff() {
-    let id = "EMP" + document.getElementById("newId").value.replace(/\D/g, "").padStart(3, '0');
-    let name = document.getElementById("newName").value;
-    let role = document.getElementById("newRole").value;
-    if(!name || !role) return alert("විස්තර පුරවන්න!");
-    db.users.push({id, name, role});
-    saveDB();
-    alert("එක් කරන ලදී!");
-    document.getElementById("newId").value = "";
-    document.getElementById("newName").value = "";
-    document.getElementById("newRole").value = "";
+// නව සාමාජිකයෙක් එක් කිරීම
+async function addStaff() {
+    const idVal = document.getElementById("newId").value;
+    const nameVal = document.getElementById("newName").value;
+    const roleVal = document.getElementById("newRole").value;
+
+    if (!idVal || !nameVal || !roleVal) return alert("කරුණාකර සියලු විස්තර පුරවන්න!");
+
+    showLoading(true);
+    const id = "EMP" + idVal.padStart(3, '0');
+    const body = new URLSearchParams({ action: "addMember", id, name: nameVal, role: roleVal });
+
+    try {
+        await fetch(SCRIPT_URL, { method: "POST", body });
+        alert("නව සාමාජිකයා සාර්ථකව එක් කරන ලදී!");
+        location.reload();
+    } catch (e) {
+        alert("එක් කිරීමට නොහැකි විය.");
+        showLoading(false);
+    }
+}
+
+function showLoading(show) {
+    document.getElementById("loading-overlay").style.display = show ? "flex" : "none";
 }
