@@ -1,66 +1,77 @@
-
 :root { 
     --primary: #1e3a8a; 
-    --secondary: #ef4444; 
-    --accent: #f59e0b;
     --bg: #f8fafc; 
-    --white: #ffffff;
-    --text: #1e293b;
+    --white: #ffffff; 
 }
 
-body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; color: var(--text); }
+body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding-bottom: 50px; }
 
 .header { 
     background: linear-gradient(135deg, var(--primary), #1e40af); 
     color: white; padding: 40px 20px; text-align: center; 
-    border-bottom-left-radius: 30px; border-bottom-right-radius: 30px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-bottom-left-radius: 30px; border-bottom-right-radius: 30px; 
 }
 
 .card { 
     background: var(--white); margin: -20px auto 20px; padding: 25px; 
-    border-radius: 20px; max-width: 480px; width: 90%;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05); position: relative;
-    box-sizing: border-box;
+    border-radius: 20px; max-width: 480px; width: 90%; 
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05); box-sizing: border-box; 
 }
 
 .profile-img { 
-    width: 100px; height: 100px; border-radius: 50%; 
-    object-fit: cover; border: 4px solid var(--white); 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-bottom: 15px;
+    width: 90px; height: 90px; border-radius: 50%; 
+    border: 3px solid var(--primary); margin-bottom: 10px; 
 }
 
-.badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-.badge-admin { background: #dcfce7; color: #166534; }
-.badge-user { background: #f1f5f9; color: #475569; }
+.badge { 
+    display: inline-block; padding: 4px 12px; border-radius: 20px; 
+    font-size: 12px; font-weight: 600; background: #f1f5f9; color: #475569; 
+}
 
-.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 20px; }
+.calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin: 15px 0; }
 
 .day { 
-    padding: 15px 5px; background: #fff; border: 1px solid #e2e8f0; 
-    border-radius: 12px; cursor: pointer; font-size: 14px; font-weight: 600;
-    text-align: center; transition: 0.2s; 
+    padding: 12px 5px; background: #fff; border: 1px solid #e2e8f0; 
+    border-radius: 10px; cursor: pointer; text-align: center; font-weight: bold; font-size: 14px;
 }
 
-.day.selected { background: var(--primary) !important; color: white !important; }
+.day.selected { background: var(--primary) !important; color: white; border-color: var(--primary); }
 .day.full { background: #fee2e2 !important; color: #991b1b !important; cursor: not-allowed; border: none; }
 
 .btn-main { 
-    background: var(--primary); color: white; width: 100%; margin-top: 15px; 
-    padding: 14px; border: none; border-radius: 12px; font-weight: 700; cursor: pointer;
+    background: var(--primary); color: white; width: 100%; padding: 14px; 
+    border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; 
+}
+
+.btn-logout { 
+    background: none; border: none; color: #ef4444; width: 100%; 
+    margin-top: 20px; font-weight: bold; cursor: pointer; font-size: 14px; 
 }
 
 input, textarea { 
-    width: 100%; padding: 14px; margin-top: 12px; border: 1px solid #e2e8f0; 
-    border-radius: 10px; box-sizing: border-box; outline: none;
+    width: 100%; padding: 12px; margin-top: 10px; border: 1px solid #e2e8f0; 
+    border-radius: 10px; box-sizing: border-box; font-family: inherit;
 }
 
-.leave-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 15px; margin-bottom: 12px; }
+.overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(255,255,255,0.9); display: flex; flex-direction: column; 
+    align-items: center; justify-content: center; z-index: 1000; 
+}
 
-.status-pill { padding: 3px 10px; border-radius: 10px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+.loader { 
+    border: 4px solid #f3f3f3; border-top: 4px solid var(--primary); 
+    border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; 
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+.leave-item { 
+    border-bottom: 1px solid #f1f5f9; padding: 12px 0; 
+    display: flex; justify-content: space-between; align-items: center; 
+}
+
+.status-label { font-size: 11px; font-weight: bold; text-transform: uppercase; padding: 2px 8px; border-radius: 5px; }
 .status-Pending { background: #fef3c7; color: #92400e; }
 .status-Approved { background: #dcfce7; color: #166534; }
 .status-Rejected { background: #fee2e2; color: #991b1b; }
-
-.admin-controls { display: flex; gap: 10px; margin-top: 10px; }
-.admin-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; }
