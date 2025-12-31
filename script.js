@@ -1,5 +1,5 @@
 // ඔයාගේ අලුත්ම URL එක මෙන්න
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwkfCmdklz6VH--pET_MkYEP_dNOY9zkl8hTIt2NXzwooo-_IOUN182M2_QdLE7crVz/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTVtMADPUzrby8CC14TTFD3XQOIMcsehvhsMWxlw0K9mDlO8Q2ypgiBxEHkYBH9znZ/exec";
 
 let db = { users: [], leaves: [] };
 let me = null;
